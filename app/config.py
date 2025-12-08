@@ -6,7 +6,7 @@ __version__ = "1.0.0"
 # [게임 설정]
 TARGET_GAME_TITLE = "StellaSora" 
 TEMPLATE_FOLDER = "templates"
-BUILDS_FOLDER = "builds"
+BUILDS_FOLDER = "presets"
 DEFAULT_BUILD_FILE = "example_build.json"
 
 # [감시 영역 설정] (절대 좌표)
