@@ -3,6 +3,11 @@
 # 프로젝트 전용 캐시 파일
 templates/templates.cache
 
+# 내부의 테스트용 이미지나 로그 파일 무시
+external_tools/*.png
+external_tools/*.log
+external_tools/temp/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
