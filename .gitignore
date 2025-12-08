@@ -8,6 +8,14 @@ external_tools/*.png
 external_tools/*.log
 external_tools/temp/
 
+# 기존 빌드 관련 무시 (혹시 모르니 남겨둠)
+build/
+dist/
+*.spec
+
+# 새로운 통합 빌드 폴더 무시
+*_Build/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
