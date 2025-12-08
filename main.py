@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 
 # [모듈 임포트]
-from app.config import DEFAULT_BUILD_FILE, BUILDS_FOLDER
+from app.config import __version__, DEFAULT_BUILD_FILE, BUILDS_FOLDER
 from app.config import AppStatus
 from app.worker import MatcherWorker
 from app.overlay import OverlayWindow
@@ -17,7 +17,7 @@ ctypes.windll.user32.SetProcessDPIAware()
 class ControlPanel(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Potential Planner Controller")
+        self.setWindowTitle(f"Potential Planner Controller v{__version__}")
         self.resize(320, 280) # UI가 커졌으므로 창 크기도 약간 조절
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 

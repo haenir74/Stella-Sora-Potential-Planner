@@ -1,5 +1,8 @@
 from enum import Enum, auto
 
+# [버전 정보]
+__version__ = "1.0.0"
+
 # [게임 설정]
 TARGET_GAME_TITLE = "StellaSora" 
 TEMPLATE_FOLDER = "templates"
