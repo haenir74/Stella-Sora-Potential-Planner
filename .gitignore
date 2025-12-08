@@ -1,3 +1,9 @@
+# .gitignore
+
+# 프로젝트 전용 캐시 파일
+templates/templates.cache
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
