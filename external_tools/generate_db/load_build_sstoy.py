@@ -55,9 +55,16 @@ def read_varint(data, offset):
 
 def extract_character_info(hash_str):
     """URL에서 압축된 빌드 정보를 추출 (마크 정보 포함)"""
+    
+    # [수정됨] 전체 URL이 입력되었을 경우 'build=' 뒷부분만 추출
+    if 'build=' in hash_str:
+        hash_str = hash_str.split('build=')[-1]
+    
     decoded_str = unquote(hash_str)
+    
+    # 접두사 확인
     if not decoded_str.startswith(SHARE_PREFIX_DEFLATE):
-        return {"error": "올바른 v2d 형식이 아닙니다."}
+        return {"error": f"올바른 v2d 형식이 아닙니다. (입력값 시작: {decoded_str[:10]}...)"}
     
     encoded_payload = decoded_str[len(SHARE_PREFIX_DEFLATE):]
     try:
@@ -198,7 +205,8 @@ def convert_url_to_my_format(url):
     return final_output
 
 if __name__ == "__main__":
-    input_url = "v2d-XiUyou%2BB_%7CSk%2CQ%2CGWi%5EW2Odyx4No%3FvD*%2FHFPzdYQ%22yW!6CjXEM)%2BV%26EH%2Cw%3Ajoi%60RX~%5D%3Ac!_r%3DUylP(Gp.Uv)i%3C%3B9vF896%3B2pz%252o%7DWgd%4074Q9Xuz%2BZl*DHCI(2V0%2CR6%7D%24WX%7BFF4Mz)vo%5EVQzFXO(%26S~wJ%2B%24H%3F47RC%2BJO_UFJ%3BPw%2CZ.khEf%3B%5B~JNE6Y~fyD!A"
+    # 테스트용 전체 URL
+    input_url = "https://jforplay.github.io/sstoy/app.html#build=v2d-XiUyou%2BB_%7CSk%2CQ%2CGWi%5EW2Odyx4No%3FvD*%2FHFPzdYQ%22yW!6CjXEM)%2BV%26EH%2Cw%3Ajoi%60RX~%5D%3Ac!_r%3DUylP(Gp.Uv)i%3C%3B9vF896%3B2pz%252o%7DWgd%4074Q9Xuz%2BZl*DHCI(2V0%2CR6%7D%24WX%7BFF4Mz)vo%5EVQzFXO(%26S~wJ%2B%24H%3F47RC%2BJO_UFJ%3BPw%2CZ.khEf%3B%5B~JNE6Y~fyD!A"
     
     result = convert_url_to_my_format(input_url)
     
