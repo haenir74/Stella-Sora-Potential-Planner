@@ -1,5 +1,3 @@
-import os
-from pathlib import Path
 from enum import Enum, auto
 
 # [버전 정보]
@@ -7,9 +5,8 @@ __version__ = "1.0.0"
 
 # [게임 설정]
 TARGET_GAME_TITLE = "StellaSora" 
-BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_FOLDER = os.path.join(BASE_DIR, "resources", "templates") # 폴더명 변경 가정
-BUILDS_FOLDER = os.path.join(BASE_DIR, "resources", "presets")
+TEMPLATE_FOLDER = "assets/templates"
+BUILDS_FOLDER = "assets/presets"
 DEFAULT_BUILD_FILE = "example_build.json"
 
 # [감시 영역 설정] (절대 좌표)
