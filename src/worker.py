@@ -8,12 +8,10 @@ from ctypes import wintypes
 from PyQt5.QtCore import QThread, pyqtSignal
 
 # 모듈 임포트
-from app.load_image import load_templates
-from app.load_build import BuildLoader
-from app.config import TARGET_GAME_TITLE, TEMPLATE_FOLDER, ROIS, FACE_OFFSET
-from app.config import REFERENCE_WIDTH, REFERENCE_HEIGHT
-from app.config import AppStatus
-from app.load_resolution import get_game_geometry, get_capture_area
+from src.load_image import load_templates
+from src.load_build import BuildLoader
+from config import TARGET_GAME_TITLE, TEMPLATE_FOLDER, ROIS, FACE_OFFSET,  REFERENCE_WIDTH, REFERENCE_HEIGHT, AppStatus
+from src.load_resolution import get_game_geometry, get_capture_area
 
 class MatcherWorker(QThread):
     match_signal = pyqtSignal(int, str, float, bool, int)

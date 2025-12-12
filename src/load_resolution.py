@@ -1,7 +1,7 @@
 import ctypes
 from ctypes import wintypes
 import pygetwindow as gw
-from app.config import TARGET_GAME_TITLE
+from config import TARGET_GAME_TITLE
 
 # WinAPI 구조체 정의 (내부용)
 class RECT(ctypes.Structure):

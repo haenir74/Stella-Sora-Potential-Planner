@@ -7,10 +7,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QColor
 
 # [모듈 임포트]
-from app.config import __version__, DEFAULT_BUILD_FILE, BUILDS_FOLDER
-from app.config import AppStatus
-from app.worker import MatcherWorker
-from app.overlay import OverlayWindow
+from config import __version__, DEFAULT_BUILD_FILE, BUILDS_FOLDER, AppStatus
+from src.worker import MatcherWorker
+from src.overlay import OverlayWindow
 
 ctypes.windll.user32.SetProcessDPIAware()
 

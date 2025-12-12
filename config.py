@@ -1,12 +1,15 @@
+import os
 from enum import Enum, auto
 
-# [버전 정보]
+# [게임 및 버전 정보]
+TARGET_GAME_TITLE = "StellaSora"
 __version__ = "1.0.0"
 
 # [게임 설정]
-TARGET_GAME_TITLE = "StellaSora" 
-TEMPLATE_FOLDER = "assets/templates"
-BUILDS_FOLDER = "assets/presets"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RESOURCES_DIR = os.path.join(BASE_DIR, "resources")
+TEMPLATE_FOLDER = os.path.join(RESOURCES_DIR, "templates")
+BUILDS_FOLDER = os.path.join(RESOURCES_DIR, "presets")
 DEFAULT_BUILD_FILE = "example_build.json"
 
 # [감시 영역 설정] (절대 좌표)

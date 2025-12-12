@@ -6,8 +6,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPen, QColor, QFont
 
 # 설정 임포트
-from app.config import TARGET_GAME_TITLE, ROIS, FACE_OFFSET
-from app.load_resolution import get_game_geometry, get_capture_area
+from config import TARGET_GAME_TITLE, ROIS, FACE_OFFSET
+from src.load_resolution import get_game_geometry, get_capture_area
 
 class OverlayWindow(QWidget):
     def __init__(self):
