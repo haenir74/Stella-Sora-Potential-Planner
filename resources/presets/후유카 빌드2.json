@@ -2,30 +2,29 @@
   "build_name": "후유카 궁 빌드2",
   "characters": {
     "fuyuka": {
-      "main_06": 3,
+      "main_02": 3,
       "main_07": 3,
-      "main_14": 3,
+      "main_04": 1,
       "main_15": 3,
       "main_16": 3,
-      "main_11": 3,
-      "main_12": 2,
-      "main_09": 1
+      "main_11": 2,
+      "main_14": 2
     },
     "chixia": {
       "sub_01": 3,
       "sub_02": 3,
       "sub_04": 3,
       "sub_11": 3,
-      "sub_05": 2,
-      "sub_08": 2
+      "sub_05": 1,
+      "sub_08": 1
     },
     "flora": {
-      "sub_01": 3,
       "sub_02": 3,
-      "sub_12": 3,
+      "sub_06": 3,
+      "sub_04": 3,
       "sub_14": 3,
       "sub_08": 2,
-      "sub_04": 2
+      "sub_03": 2
     }
   }
 }
