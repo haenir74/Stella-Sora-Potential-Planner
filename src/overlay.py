@@ -1,13 +1,11 @@
-import pygetwindow as gw
 import ctypes
-from ctypes import wintypes
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QPen, QColor, QFont
 
 # 설정 임포트
-from config import TARGET_GAME_TITLE, ROIS, FACE_OFFSET
-from src.load_resolution import get_game_geometry, get_capture_area
+from config import ROIS, FACE_OFFSET
+from src.load_resolution import get_capture_area
 
 class OverlayWindow(QWidget):
     def __init__(self):
@@ -18,13 +16,16 @@ class OverlayWindow(QWidget):
         self.debug_info = {}
         self.face_debug_info = {}
         self.debug_mode = False
+
+        # [최적화] 게임 창 위치 정보를 캐싱할 변수
+        self.cached_geo = None 
         
+        # 윈도우 설정 (투명, 클릭 통과, 최상위)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         hwnd = self.winId()
-
         GWL_EXSTYLE = -20
         WS_EX_LAYERED = 0x00080000
         WS_EX_TRANSPARENT = 0x00000020
@@ -35,13 +36,18 @@ class OverlayWindow(QWidget):
         screen_rect = QApplication.desktop().screenGeometry()
         self.setGeometry(0, 0, screen_rect.width(), screen_rect.height())
 
+    # [NEW] Worker가 보내준 게임 위치 정보를 받아서 저장
+    def update_geometry(self, geo):
+        self.cached_geo = geo
+        self.repaint() # 위치가 업데이트되었으니 다시 그리기
+
     def set_visibility(self, visible):
         self.is_visible = visible
         self.repaint()
 
     def set_debug_mode(self, enabled):
         self.debug_mode = enabled
-        self.repaint() # 상태 바뀌면 즉시 다시 그리기
+        self.repaint()
 
     def update_result(self, index, filename, score, matched, priority):
         if matched:
@@ -67,18 +73,18 @@ class OverlayWindow(QWidget):
     def paintEvent(self, event):
         if not self.is_visible: return
 
-        geo = get_game_geometry()
-        if not geo: return
+        # [최적화] 매번 계산하지 않고, Worker가 알려준 cached_geo 사용
+        geo = self.cached_geo
+        if not geo: return 
 
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
         for i, roi in enumerate(ROIS):
             # -----------------------------------------------------------
-            # [디버깅용] 항상 표시되는 인식 범위 박스
+            # [디버깅용] 인식 범위 박스
             # -----------------------------------------------------------
             if self.debug_mode:
-                # 얼굴 인식 범위 (노란색 점선)
                 face_area = get_capture_area(geo, roi, FACE_OFFSET)
                 painter.setPen(QPen(QColor(255, 255, 0, 150), 1, Qt.DotLine))
                 painter.setBrush(Qt.NoBrush)
@@ -87,7 +93,6 @@ class OverlayWindow(QWidget):
                     face_area["width"], face_area["height"]
                 )
 
-                # 카드 인식 범위 (하얀색 점선)
                 card_area = get_capture_area(geo, roi, None)
                 painter.setPen(QPen(QColor(255, 255, 255, 80), 1, Qt.DotLine))
                 painter.drawRect(
@@ -96,24 +101,21 @@ class OverlayWindow(QWidget):
                 )
 
             # -------------------------------------------------------
-            # 1. 얼굴 디버그 정보 그리기 (노란색)
+            # 1. 얼굴 디버그 정보
             # -------------------------------------------------------
             if self.debug_mode:
                 if i in self.face_debug_info:
                     fname, score = self.face_debug_info[i]
-                    
                     face_area = get_capture_area(geo, roi, FACE_OFFSET)
                     fx, fy = face_area["left"], face_area["top"]
-                    fw, fh = face_area["width"], face_area["height"]
-
+                    fw = face_area["width"]
                     text = f"{fname}\n({score:.2f})"
 
-                    # 위치: 얼굴 박스 위쪽 (또는 안쪽 상단)
                     painter.setBrush(QColor(0, 0, 0, 200))
                     painter.setPen(Qt.NoPen)
-                    painter.drawRect(fx, fy - 40, fw, 40) # 박스 바로 위에 그림
+                    painter.drawRect(fx, fy - 40, fw, 40)
 
-                    painter.setPen(QColor(255, 255, 0)) # 노란색 글씨
+                    painter.setPen(QColor(255, 255, 0))
                     painter.setFont(QFont("Arial", 9, QFont.Bold))
                     painter.drawText(fx, fy - 40, fw, 40, Qt.AlignCenter, text)
                     
@@ -121,13 +123,9 @@ class OverlayWindow(QWidget):
             # [디버깅용] 잠재력 디버그 표시
             # -----------------------------------------------------------
             if self.debug_mode and (i in self.debug_info):
-                # 여기서도 card_area가 필요하므로 확실하게 계산
                 card_area = get_capture_area(geo, roi, None)
-                x, y = card_area["left"], card_area["top"]
-                w, h = card_area["width"], card_area["height"]
-
+                x, y, w, h = card_area["left"], card_area["top"], card_area["width"], card_area["height"]
                 fname, score = self.debug_info[i]
-                
                 debug_text = f"{fname}\n({score:.2f})"
                 
                 painter.setBrush(QColor(0, 0, 0, 200))
@@ -144,29 +142,48 @@ class OverlayWindow(QWidget):
             if i in self.matches:
                 filename, score, priority = self.matches[i]
                 
-                if priority == 3:
-                    box_color = QColor(255, 165, 0) # Gold
+                # [설정] 5단계 등급 정의
+                if priority == 5:
+                    # [5] 6레벨 필수 -> 주황색/골드
+                    box_color = QColor(255, 140, 0) 
                     line_width = 5
-                    label_text = "★ ESSENTIAL ★"
-                elif priority == 2:
-                    box_color = QColor(255, 0, 255) # Magenta
-                    line_width = 3
+                    label_text = "★ Lv.6 ESSENTIAL ★"
+                    
+                elif priority == 4:
+                    # [4] 6레벨 권장 -> 핑크/자주색
+                    box_color = QColor(255, 20, 147) 
+                    line_width = 4
                     label_text = "Lv.6 RECOMMEND"
-                elif priority == 1:
-                    box_color = QColor(0, 255, 0)   # Green
-                    line_width = 2
+                    
+                elif priority == 3:
+                    # [3] 1레벨 필수 -> 하늘색/Cyan
+                    box_color = QColor(0, 255, 255)
+                    line_width = 4
+                    label_text = "★ Lv.1 ESSENTIAL ★"
+                    
+                elif priority == 2:
+                    # [2] 1레벨 권장 -> 초록색
+                    box_color = QColor(50, 205, 50) 
+                    line_width = 3
                     label_text = "Lv.1 RECOMMEND"
+
+                elif priority == 1:
+                    # [1] 후순위 -> 흰색/회색
+                    box_color = QColor(220, 220, 220) 
+                    line_width = 2
+                    label_text = "WAIT / LATER"
+                    
                 else:
-                    box_color = QColor(200, 200, 200, 50)
-                    line_width = 1
+                    # 0: 미지정 (표시 안 함)
+                    box_color = QColor(0, 0, 0, 0)
+                    line_width = 0
                     label_text = ""
 
-                if priority > 0:
-                    # 디버그 모드가 꺼져있을 때를 대비해 여기서 card_area를 다시 계산합니다.
+                # 텍스트 그리기
+                if label_text != "":
+                    # Worker에서 받은 캐시된 위치 정보 사용
                     card_area = get_capture_area(geo, roi, None)
-                    
                     abs_x, abs_y = card_area["left"], card_area["top"]
-                    abs_w, abs_h = card_area["width"], card_area["height"]
 
                     painter.setBrush(QColor(0, 0, 0, 180))
                     painter.setPen(Qt.NoPen)
