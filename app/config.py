@@ -1,34 +1,36 @@
+import os
+import sys
 from enum import Enum, auto
 
-# [버전 정보]
+# [게임 및 버전 정보]
+TARGET_GAME_TITLE = "StellaSora"
 __version__ = "1.0.0"
 
-# [게임 설정]
-TARGET_GAME_TITLE = "StellaSora" 
-TEMPLATE_FOLDER = "templates"
-BUILDS_FOLDER = "presets"
+# =========================================================
+# 실행 환경에 따른 경로 분기 처리
+# =========================================================
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 리소스 경로 연결
+RESOURCES_DIR = os.path.join(BASE_DIR, "resources")
+TEMPLATE_FOLDER = os.path.join(RESOURCES_DIR, "templates")
+BUILDS_FOLDER = os.path.join(RESOURCES_DIR, "presets")
 DEFAULT_BUILD_FILE = "example_build.json"
-
-# [감시 영역 설정] (절대 좌표)
-# ROIS = [
-#     {"x": 215, "y": 170, "w": 165, "h": 200}, # 1번 카드 (왼쪽)
-#     {"x": 560, "y": 170, "w": 165, "h": 200}, # 2번 카드 (가운데)
-#     {"x": 905, "y": 170, "w": 165, "h": 200}  # 3번 카드 (오른쪽)
-# ]
-
-REFERENCE_WIDTH = 1280
-REFERENCE_HEIGHT = 720
+# =========================================================
 
 # [감시 영역 설정] (상대 좌표: 0.0 ~ 1.0)
 # 기준 해상도: 1280x720
+REFERENCE_WIDTH = 1280
+REFERENCE_HEIGHT = 720
+
 ROIS = [
     {"x": 0.16016, "y": 0.20139, "w": 0.14453, "h": 0.34722},
     {"x": 0.42969, "y": 0.20139, "w": 0.14453, "h": 0.34722},
     {"x": 0.69922, "y": 0.20139, "w": 0.14453, "h": 0.34722}
 ]
-
-# [얼굴 인식 영역 설정] (절대 좌표)
-# FACE_OFFSET = {"x": -75, "y": -40, "w": 70, "h": 110}
 
 # [얼굴 인식 영역 보정] (상대 좌표)
 FACE_OFFSET = {"x": -0.05078, "y": -0.02083, "w": 0.05569, "h": 0.16278}

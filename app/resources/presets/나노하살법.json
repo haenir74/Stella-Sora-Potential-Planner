@@ -1,0 +1,32 @@
+{
+  "build_name": "나노하살법",
+  "characters": {
+    "nanoha": {
+      "main_06": 1,
+      "main_07": 1,
+      "main_09": 1,
+      "main_13": 1,
+      "main_10": 2,
+      "main_12": 2,
+      "main_08": 2,
+      "main_11": 3
+    },
+    "tilia": {
+      "sub_02": 1,
+      "sub_06": 1,
+      "sub_04": 1,
+      "sub_08": 1,
+      "sub_12": 4,
+      "sub_10": 4
+    },
+    "nazuka": {
+      "sub_01": 1,
+      "sub_03": 1,
+      "sub_12": 1,
+      "sub_13": 2,
+      "sub_09": 4,
+      "sub_10": 3,
+      "sub_07": 1
+    }
+  }
+}
