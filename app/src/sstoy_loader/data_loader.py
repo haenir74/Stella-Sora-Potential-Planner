@@ -1,111 +1,123 @@
 import json
 import requests
-import os
 
-# =============================================================================
-# [설정] GitHub Raw Data URL (원본 소스)
-# =============================================================================
-# 실제 sstoy 리포지토리 구조에 맞춘 추정 URL입니다.
-# 만약 404 에러가 나면 경로를 수정해야 합니다 (예: public/data -> src/data 등)
-BASE_URL = "https://raw.githubusercontent.com/jforplay/sstoy/main/public/data"
-URL_CHARACTER = f"{BASE_URL}/Character.json"
-URL_POTENTIAL = f"{BASE_URL}/Potential.json"
+# 1. GitHub 설정 정보
+# 레포지토리: https://github.com/JforPlay/sstoy
+OWNER = "JforPlay"
+REPO = "sstoy"
+BRANCH = "main"  # 혹시 파일을 못 찾으면 'master'로 변경해서 시도해보세요.
+BASE_URL = f"https://raw.githubusercontent.com/{OWNER}/{REPO}/{BRANCH}/public/data"
 
-OUTPUT_DB = "mapping_db.json"
+# 데이터 파일들의 Raw URL 정의
+URLS = {
+    "character": f"{BASE_URL}/Character.json",
+    "potential": f"{BASE_URL}/CharPotential.json",
+    "language": f"{BASE_URL}/EN/Character.json" # 영어 이름 파일 경로
+}
+
+# 2. 입력 데이터 (커뮤니티 사이트 JSON 예시)
+input_json_str = """
+{
+  "build_name": "클라루 후유카 거장용",
+  "characters": [
+    {
+      "position": "Master",
+      "char_idx": 25,
+      "potentials": [612, 613, 638, 637, 622, 618, 636, 617],
+      "marks": {
+        "617": 4,
+        "618": 3,
+        "622": 1,
+        "636": 2,
+        "637": 1,
+        "638": 1
+      }
+    }
+  ]
+}
+"""
 
 def fetch_json_from_github(url):
-    """GitHub에서 JSON 파일을 다운로드합니다."""
-    print(f"🌐 다운로드 시도: {url}")
+    """GitHub Raw URL에서 JSON 데이터를 가져옵니다."""
     try:
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            print("   ✅ 다운로드 성공")
-            return response.json()
-        else:
-            print(f"   ❌ 실패 (Status Code: {response.status_code})")
-            return None
-    except Exception as e:
-        print(f"   ❌ 네트워크 에러: {e}")
+        response = requests.get(url)
+        response.raise_for_status() # 200 OK가 아니면 에러 발생
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching {url}: {e}")
         return None
 
-def update_database():
-    print("🔄 DB 업데이트를 시작합니다...")
+def main():
+    print("GitHub에서 데이터를 다운로드 중입니다...")
+    
+    # 3. 데이터 다운로드
+    char_db = fetch_json_from_github(URLS["character"])
+    pot_db = fetch_json_from_github(URLS["potential"])
+    lang_db = fetch_json_from_github(URLS["language"])
 
-    # 1. GitHub에서 최신 데이터 가져오기
-    chars_data = fetch_json_from_github(URL_CHARACTER)
-    pots_data = fetch_json_from_github(URL_POTENTIAL)
-
-    if not chars_data or not pots_data:
-        print("⚠️ 데이터를 가져오지 못해 업데이트를 중단합니다.")
+    if not (char_db and pot_db and lang_db):
+        print("데이터 다운로드에 실패하여 작업을 중단합니다.")
         return
 
-    # 2. 데이터 파싱 및 정렬 (SSToy 알고리즘 적용)
-    # -------------------------------------------------------------------------
-    # 캐릭터 ID 정렬
-    if isinstance(chars_data, list):
-        char_dict = {c['Id']: c for c in chars_data if 'Id' in c}
-    else:
-        char_dict = {int(k): v for k, v in chars_data.items()}
-    all_char_ids = sorted(list(char_dict.keys()))
+    input_data = json.loads(input_json_str)
+    result_characters = []
 
-    # 잠재력 ID 정렬
-    if isinstance(pots_data, list):
-        pot_dict = {p['Id']: p for p in pots_data if 'Id' in p}
-    else:
-        pot_dict = {int(k): v for k, v in pots_data.items()}
-    all_pot_ids = sorted(list(pot_dict.keys()))
-    
-    print(f"📊 분석 결과: 캐릭터 {len(all_char_ids)}명 / 잠재력 {len(all_pot_ids)}개")
+    # Character ID 리스트 정렬 (char_idx 매핑용)
+    # Character.json의 키들을 숫자로 변환하여 정렬
+    sorted_char_ids = sorted([int(k) for k in char_db.keys()])
 
-    # 3. 매핑 DB 구조 생성
-    my_db = {
-        "sstoy_index_map": all_char_ids,
-        "sstoy_pot_map": all_pot_ids,
-        "characters": {}
+    # 4. 데이터 매칭 및 변환 로직
+    for char_entry in input_data['characters']:
+        input_idx = char_entry['char_idx']
+        
+        # char_idx 매핑 (1-based index라고 가정)
+        if 0 < input_idx <= len(sorted_char_ids):
+            real_char_id = sorted_char_ids[input_idx - 1]
+        else:
+            real_char_id = None
+            
+        char_info = {}
+        
+        if real_char_id:
+            str_id = str(real_char_id)
+            
+            # 영문 이름 찾기
+            name_key = char_db[str_id].get("Name")
+            english_name = lang_db.get(name_key, "Unknown")
+            
+            char_info['Name'] = english_name
+            char_info['Id'] = real_char_id
+            char_info['Position'] = char_entry['position']
+            
+            # 잠재력(Potential) 정보 매칭
+            if str_id in pot_db:
+                pot_data = pot_db[str_id]
+                
+                # Master 포지션 잠재력 추출
+                char_info['Game_Potential_IDs'] = {
+                    "Specific": pot_data.get("MasterSpecificPotentialIds", []),
+                    "Common": pot_data.get("CommonPotentialIds", []),
+                    "Normal": pot_data.get("MasterNormalPotentialIds", [])
+                }
+                
+                char_info['Site_Potential_Indices'] = char_entry['potentials']
+                char_info['Marks'] = char_entry['marks']
+            else:
+                char_info['Potentials'] = "Not Found in DB"
+                
+        else:
+            char_info['Error'] = f"Character Index {input_idx} not found"
+
+        result_characters.append(char_info)
+
+    # 5. 결과 출력
+    final_output = {
+        "build_name": input_data['build_name'],
+        "converted_characters": result_characters
     }
 
-    # 4. 상세 정보 매핑
-    for real_id in all_char_ids:
-        char_info = char_dict[real_id]
-        str_id = str(real_id)
-        
-        # 이름 가져오기
-        name = char_info.get('Name', f"Character_{real_id}")
-        
-        my_db["characters"][str_id] = {
-            "name": name,
-            "potentials": {} 
-        }
-        
-        # 잠재력 매핑
-        if 'Potentials' in char_info:
-            raw_pot_list = char_info['Potentials']
-            pot_map = {}
-            for i, pid in enumerate(raw_pot_list):
-                pid_int = int(pid)
-                if pid_int in pot_dict:
-                    p_name = pot_dict[pid_int].get('Name', str(pid_int))
-                    
-                    # 0, 1번 인덱스 = 메인(Main), 나머지 = 서브(Sub)
-                    role_key = "main" if i < 2 else "sub"
-                    
-                    pot_map[str(pid_int)] = {
-                        "main": p_name if role_key == "main" else None,
-                        "sub": p_name if role_key == "sub" else None
-                    }
-            my_db["characters"][str_id]["potentials"] = pot_map
-
-    # 5. 로컬 파일로 저장 (캐싱)
-    with open(OUTPUT_DB, 'w', encoding='utf-8') as f:
-        json.dump(my_db, f, indent=2, ensure_ascii=False)
-        
-    print(f"🎉 업데이트 완료! '{OUTPUT_DB}' 파일이 최신 버전으로 갱신되었습니다.")
+    print("-" * 30)
+    print(json.dumps(final_output, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
-    # requests 라이브러리가 없으면 설치 안내
-    try:
-        import requests
-        update_database()
-    except ImportError:
-        print("❌ 'requests' 라이브러리가 필요합니다.")
-        print("   설치 명령어: pip install requests")
+    main()
