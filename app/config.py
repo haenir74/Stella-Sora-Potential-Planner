@@ -10,8 +10,12 @@ __version__ = "1.0.0"
 # 실행 환경에 따른 경로 분기 처리
 # =========================================================
 if getattr(sys, 'frozen', False):
+    # 1. PyInstaller로 빌드된 EXE 실행 환경
+    # exe 파일이 위치한 폴더를 기준(Root)으로 잡습니다.
     BASE_DIR = os.path.dirname(sys.executable)
 else:
+    # 2. 개발 환경 (Python 실행)
+    # 이 파일(config.py)이 있는 폴더(app)를 기준으로 잡습니다.
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 리소스 경로 연결
@@ -19,6 +23,11 @@ RESOURCES_DIR = os.path.join(BASE_DIR, "resources")
 TEMPLATE_FOLDER = os.path.join(RESOURCES_DIR, "templates")
 BUILDS_FOLDER = os.path.join(RESOURCES_DIR, "presets")
 DEFAULT_BUILD_FILE = "example_build.json"
+
+REPO_BASE_URL = "https://raw.githubusercontent.com/JforPlay/sstoy/refs/heads/main/public/data"
+CHARACTER_DB_URL = f"{REPO_BASE_URL}/Character.json"
+POTENTIAL_DB_URL = f"{REPO_BASE_URL}/Potential.json"
+CHAR_NAME_DB_URL = f"{REPO_BASE_URL}/EN/Character.json"
 # =========================================================
 
 # [감시 영역 설정] (상대 좌표: 0.0 ~ 1.0)

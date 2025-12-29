@@ -2,7 +2,7 @@ import sys
 import os
 import ctypes
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLabel, QComboBox, QPushButton, QCheckBox, QGroupBox)
+                             QLabel, QComboBox, QPushButton, QCheckBox, QGroupBox, QMessageBox)
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
@@ -10,6 +10,12 @@ from PyQt5.QtGui import QFont
 from config import __version__, DEFAULT_BUILD_FILE, BUILDS_FOLDER, AppStatus
 from src.worker import MatcherWorker
 from src.overlay import OverlayWindow
+
+try:
+    from sstoy_loader.build_maker import BuildMakerApp
+except ImportError as e:
+    print(f"⚠️ 모듈 로딩 실패: {e}")
+    BuildMakerApp = None
 
 ctypes.windll.user32.SetProcessDPIAware()
 
@@ -21,6 +27,7 @@ class ControlPanel(QWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         self.is_monitoring = False 
+        self.build_maker_window = None
 
         # UI 레이아웃 구성
         layout = QVBoxLayout()
@@ -72,6 +79,7 @@ class ControlPanel(QWidget):
         # 3. 빌드 선택
         build_group = QGroupBox("빌드 선택")
         build_layout = QVBoxLayout()
+
         self.build_combo = QComboBox()
         self.refresh_build_list()
         self.build_combo.currentTextChanged.connect(self.on_build_changed)
@@ -80,6 +88,16 @@ class ControlPanel(QWidget):
         btn_refresh = QPushButton("목록 새로고침")
         btn_refresh.clicked.connect(self.refresh_build_list)
         build_layout.addWidget(btn_refresh)
+        build_group.setLayout(build_layout)
+
+        build_btns_layout = QHBoxLayout()
+
+        btn_maker = QPushButton("URL로 생성 (+)")
+        btn_maker.setStyleSheet("color: #1976D2; font-weight: bold;")
+        btn_maker.clicked.connect(self.open_build_maker)
+        build_btns_layout.addWidget(btn_maker)
+        
+        build_layout.addLayout(build_btns_layout)
         build_group.setLayout(build_layout)
         layout.addWidget(build_group)
 
@@ -103,9 +121,6 @@ class ControlPanel(QWidget):
         layout.addLayout(bottom_layout)
         self.setLayout(layout)
 
-        # ------------------------------------------------
-        # [핵심 연결] Worker 및 Overlay 초기화
-        # ------------------------------------------------
         self.overlay = OverlayWindow()
 
         current_file = self.build_combo.currentText()
@@ -116,14 +131,12 @@ class ControlPanel(QWidget):
 
         self.worker = MatcherWorker(initial_build_path)
 
-        # 시그널 연결
         self.worker.match_signal.connect(self.overlay.update_result)
         self.worker.reset_signal.connect(self.overlay.clear_all)
         self.worker.status_signal.connect(self.update_status_text)
         self.worker.initial_load_finished.connect(self.on_loading_complete)
         self.worker.debug_signal.connect(self.overlay.update_debug_info)
         
-        # [NEW] Worker가 찾은 좌표를 오버레이에 전달 (성능 최적화)
         self.worker.geometry_signal.connect(self.overlay.update_geometry)
 
         self.overlay.show()
@@ -217,6 +230,21 @@ class ControlPanel(QWidget):
         if text and text.endswith(".json"):
             full_path = os.path.join(BUILDS_FOLDER, text)
             self.worker.update_build(full_path)
+
+    def open_build_maker(self):
+        if BuildMakerApp is None:
+            QMessageBox.critical(self, "오류", "빌드 생성기 모듈(sstoy_loader/build_maker.py)을 찾을 수 없습니다.")
+            return
+
+        if self.build_maker_window is not None and self.build_maker_window.isVisible():
+            self.build_maker_window.raise_()
+            self.build_maker_window.activateWindow()
+            return
+
+        self.build_maker_window = BuildMakerApp()
+        self.build_maker_window.conversion_finished.connect(self.refresh_build_list)
+        
+        self.build_maker_window.show()
 
     def toggle_debug(self, state):
         self.overlay.set_debug_mode(self.check_debug.isChecked())
