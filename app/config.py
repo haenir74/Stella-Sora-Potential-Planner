@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 # [게임 및 버전 정보]
 TARGET_GAME_TITLE = "StellaSora"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # =========================================================
 # 실행 환경에 따른 경로 분기 처리
