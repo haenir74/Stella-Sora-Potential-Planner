@@ -9,8 +9,8 @@ POSITIONS = ['master', 'assist1', 'assist2']
 MARK_PRIORITY_MAP = {
     1: 5,  # 필수 (Essential)
     3: 4,  # 다다익선 (Recommended)
-    4: 3,  # 명함만 (Minimum)
-    0: 2,  # 명함 필수
+    4: 3,  # 명함 필수
+    0: 2,  # 명함만 (Minimum)
     2: 1   # 후순위 (Low)
 }
 
