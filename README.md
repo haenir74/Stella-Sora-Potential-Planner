@@ -42,21 +42,30 @@
 
 ---
 
-## 개발자 가이드
+## 🛠️ 개발 환경 설정 (For Developers)
 
-### 1. 요구 사항
+이 섹션은 소스 코드를 직접 수정하거나 기능을 추가하려는 개발자를 위한 안내입니다.
+
+### 1. 필수 요구 사항
 * Python 3.8 이상
 * Windows OS (WinAPI 의존성)
 
-### 2. 설치
+### 2. 라이브러리 설치
+`requirements.txt`가 있는 폴더에서 아래 명령어를 실행하여 의존성 패키지를 설치합니다.
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. 빌드
-```bash
-pyinstaller --onedir --noconsole --name "PotentialPlanner" main.py
-```
+### 3. 프로젝트 빌드 (Build)
+본 프로젝트는 리소스 파일 복사 및 경로 설정을 위해 전용 빌드 스크립트를 사용합니다.
+루트 경로에 있는 **`build.bat`** 파일을 실행하십시오.
+
+* **빌드 과정:**
+  1. 기존 빌드 폴더 및 파이썬 캐시(`__pycache__`) 정리
+  2. PyInstaller를 통한 실행 파일 생성 (`run.py` 진입점 기준)
+  3. `resources` 폴더 및 필수 에셋 자동 복사
+* **결과물 위치:**
+  * 빌드 결과물은 프로젝트 폴더 상위의 **`../PotentialPlanner_Build/dist/`** 경로에 생성됩니다.
 
 ---
 
