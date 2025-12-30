@@ -1,87 +1,71 @@
 # Potential Planner
 
-게임 화면을 실시간으로 분석하여 캐릭터를 인식하고, 사전에 설정된 빌드(Build) 우선순위에 따라 최적의 스킬 카드를 오버레이로 하이라이트 해줍니다.
+게임 '스텔라 소라' 화면을 실시간으로 분석하여 캐릭터를 인식하고, 사전에 설정된 빌드(Build) 우선순위에 따라 최적의 스킬 카드를 오버레이로 표시해 주는 도구입니다.
 
 ---
 
-## 주요 기능 (Key Features)
+## 주요 기능
 
-* **실시간 화면 인식 (Real-time Detection)**
-    * `MSS`와 `OpenCV`를 활용하여 끊김 없는 고속 스캔을 지원합니다.
-    * **2단계 인식 시스템:** 캐릭터 얼굴을 먼저 식별한 후 해당 캐릭터의 스킬만 대조하여 시스템 리소스를 절약합니다.
+### 실시간 화면 인식
+* MSS와 OpenCV를 활용한 고속 화면 스캔
+* 캐릭터 얼굴 식별 후 스킬 이미지를 대조하는 2단계 매칭 시스템 적용
 
-* **스마트 오버레이 (Smart Overlay)**
-    * 게임 화면 위에 추천 등급(Essential, Lv.6, Lv.1)에 따라 색상별 테두리와 텍스트를 표시합니다.
-    * **Click-through 지원:** 오버레이 창이 마우스 입력을 가로채지 않고 투과시키므로, 오버레이를 켠 상태에서도 자유로운 게임 플레이가 가능합니다.
+### 스마트 오버레이
+* 추천 등급(Essential, Lv.6, Lv.1)에 따른 색상별 테두리 표시
+* Click-through(클릭 투과) 지원으로 오버레이가 활성화된 상태에서도 게임 조작 가능
 
-* **해상도 자동 대응 (Resolution Aware)**
-    * 게임 창의 크기가 변하거나 해상도가 달라져도, 상대 좌표 비율(Ratio) 계산을 통해 정확한 인식 위치를 자동으로 추적합니다.
-    * 게임 창 위치 이동 시 자동으로 오버레이 위치가 동기화됩니다.
+### 웹 빌드 연동 (v1.0.1)
+* 외부 공략 사이트의 빌드 URL을 입력하여 캐릭터 잠재력 및 스킬 우선순위 데이터 로드 기능
+* JSON 파일을 직접 수정하지 않고 최신 메타 반영 가능
 
-* **빌드 관리 시스템 (Build Management)**
-    * `JSON` 파일을 통해 캐릭터별 스킬 우선순위를 손쉽게 관리하고 공유할 수 있습니다.
-    * 프로그램 내에서 빌드 파일을 실시간으로 교체할 수 있습니다.
+### 해상도 자동 대응
+* 게임 창 크기 및 해상도 변경 시 상대 좌표 비율(Ratio) 계산을 통해 인식 위치 자동 추적
 
-* **디버그 모드 (Debug Mode)**
-    * 인식 범위(ROI)와 현재 인식된 이미지의 일치율(Score)을 실시간으로 시각화하여, 인식 문제를 쉽게 진단할 수 있습니다.
+### 디버그 모드
+* 인식 범위(ROI) 및 이미지 일치율(Score) 시각화 기능 제공
 
 ---
 
-## 다운로드 및 실행 (For Users)
+## 다운로드 및 실행
 
-### 1. 설치 및 준비
-1. 배포된 `PotentialPlanner_v1.0.0.zip` 파일을 다운로드합니다.
-2. 압축을 풉니다.
-    > **주의:** 폴더 내의 `templates/` (이미지 폴더)와 `presets/` (빌드 폴더)는 `PotentialPlanner.exe`와 **반드시 같은 폴더**에 있어야 합니다.
+### 1. 설치
+1. Releases 탭에서 최신 버전(v1.0.1 이상)의 zip 파일을 다운로드합니다.
+2. 압축을 해제합니다. (모든 파일은 실행 파일과 같은 폴더에 유지되어야 합니다.)
 
 ### 2. 실행 방법
-1. **게임 실행:** 스텔라소라 게임 클라이언트를 먼저 실행합니다.
-2. **프로그램 실행:** `PotentialPlanner.exe`를 실행합니다.
-3. **빌드 선택:** 드롭다운 메뉴에서 원하는 빌드(예: `example_build.json`)를 선택합니다.
-4. **시작:** `▶` 버튼을 누르면 감시가 시작됩니다.
+1. 게임 클라이언트를 실행합니다.
+2. PotentialPlanner.exe를 실행합니다.
+3. 빌드를 선택합니다.
+    * 방법 A: 드롭다운 메뉴에서 저장된 JSON 파일 선택
+    * 방법 B: 'URL 불러오기' 버튼을 클릭하여 공략 사이트 주소 입력
+4. 재생(▶) 버튼을 눌러 인식을 시작합니다.
 
 ---
 
-## 개발 환경 설정 (For Developers)
+## 개발자 가이드
 
-이 섹션은 소스 코드를 직접 수정하거나 기능을 추가하려는 개발자를 위한 안내입니다.
-
-### 1. 필수 요구 사항
+### 1. 요구 사항
 * Python 3.8 이상
-* Windows OS (WinAPI 사용으로 인해 타 OS 호환 불가)
+* Windows OS (WinAPI 의존성)
 
-### 2. 라이브러리 설치
-`requirements.txt`가 `app` 폴더 내에 위치합니다. 아래 명령어로 `app` 폴더로 이동 후 패키지를 설치하세요.
+### 2. 설치
+```bash
 pip install -r requirements.txt
+```
 
-### 3. 프로젝트 빌드
-build.bat을 실행해서 exe 파일로 빌드합니다.
-
----
-
-## 🛡️ 보안 및 프라이버시 (Security & Privacy)
-
-본 프로그램은 게임 클라이언트의 메모리를 변조하거나 패킷을 가로채지 않습니다. 오직 `Windows API`와 `OpenCV`를 통해 화면에 송출되는 이미지를 캡처하여 분석하는 **비침해적(Non-invasive) 방식**으로 작동합니다.
-모든 이미지 분석 및 연산 과정은 사용자의 PC 내에서 오프라인으로 수행됩니다. 게임 화면이나 개인 정보를 외부 서버로 전송하거나 수집하지 않습니다.
+### 3. 빌드
+```bash
+pyinstaller --onedir --noconsole --name "PotentialPlanner" main.py
+```
 
 ---
 
-## ⚖️ 저작권 및 법적 고지 (Copyright & Legal Notice)
+## 라이선스 (License)
 
-1. 본 소프트웨어는 게임 '스텔라 소라'의 팬 프로젝트인 **비공식 툴**이며, 퍼블리셔인 **Yostar Inc.** 또는 개발사와 어떠한 공식적인 제휴 관계도 없습니다.
+### 소스 코드
+본 프로젝트의 소스 코드는 **MIT License**를 따릅니다. 누구나 자유롭게 사용, 수정, 배포할 수 있습니다. 자세한 내용은 `LICENSE` 파일을 참고하십시오.
 
-2. 프로젝트 내에서 사용된 모든 게임 관련 자산(캐릭터 이미지, 아이콘, 게임 데이터, 고유 명사 등)의 저작권 및 지적 재산권은 전적으로 **Yostar Inc.** 및 해당 원작자에게 귀속됩니다.
-   본 프로젝트는 해당 저작물을 침해할 의도가 없으며, 게임 플레이를 보조하기 위한 목적으로만 사용됩니다.
-
-3. 이 프로그램은 무료로 배포되며, 어떠한 형태의 금전적 이득을 취하지 않습니다.
-
-4. 본 소프트웨어의 사용으로 인해 발생하는 모든 결과(게임 계정 제재, 데이터 손실, 하드웨어 손상 등)에 대한 책임은 전적으로 **사용자 본인**에게 있습니다. 개발자는 어떠한 경우에도 본 소프트웨어 사용과 관련하여 발생한 손해에 대해 법적 책임을 지지 않습니다.
-
----
-
-## ⚖️ Disclaimer
-
-1. This software is an **unofficial fan project** and is not endorsed by, directly affiliated with, or sponsored by **Yostar Inc.**
-2. All game assets, including but not limited to images, icons, data, and character names, are the intellectual property of **Yostar Inc.** and their respective owners.
-3. This tool is created solely for gameplay assistance and educational purposes. No copyright infringement is intended.
-4. This software is provided "AS-IS", without warranty of any kind. The developer is not responsible for any bans, data loss, or damages resulting from its use. **Use at your own risk.**
+### 저작권 및 법적 고지
+1. **비공식 팬 프로젝트:** 이 소프트웨어는 '스텔라 소라'의 비공식 툴이며, 퍼블리셔인 Yostar Inc. 및 개발사와 공식적인 제휴 관계가 없습니다.
+2. **지적 재산권:** 프로젝트에 사용된 모든 게임 에셋(이미지, 데이터, 명칭 등)의 저작권은 Yostar Inc. 및 원작자에게 있습니다. 본 프로젝트는 저작권을 침해할 의도가 없으며 게임 플레이 보조 목적으로만 사용됩니다.
+3. **면책 조항:** 본 소프트웨어는 "있는 그대로(AS-IS)" 제공됩니다. 개발자는 사용으로 인해 발생하는 계정 제재, 데이터 손실 등에 대해 책임을 지지 않습니다.
