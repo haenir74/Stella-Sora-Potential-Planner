@@ -8,10 +8,9 @@ import decoder
 REPO_BASE_URL = "https://raw.githubusercontent.com/JforPlay/sstoy/refs/heads/main/public/data"
 CHARACTER_DB_URL = f"{REPO_BASE_URL}/Character.json"
 POTENTIAL_DB_URL = f"{REPO_BASE_URL}/Potential.json"
-CHAR_NAME_DB_URL = f"{REPO_BASE_URL}/EN/Character.json"  # 영문 이름 DB 필수
+CHAR_NAME_DB_URL = f"{REPO_BASE_URL}/EN/Character.json"
 
 def fetch_db(url, name):
-    """GitHub에서 DB 데이터를 가져옵니다."""
     print(f"📥 {name} 데이터 다운로드 중...")
     try:
         response = requests.get(url)
@@ -22,7 +21,6 @@ def fetch_db(url, name):
         return {}
 
 def build_id_mapping(db_json):
-    """DB ID를 정렬하여 매핑 리스트 생성"""
     if not db_json: return []
     all_ids = [int(k) for k in db_json.keys()]
     return sorted(list(set(all_ids)))
@@ -34,10 +32,6 @@ def get_real_id(mapped_idx, id_map):
     return None
 
 def get_program_char_key(real_id, name_db):
-    """
-    ID를 프로그램용 키 포맷(소문자_언더바)으로 변환합니다.
-    예: 158 (Snowish Laru) -> "snowish_laru"
-    """
     if not name_db: return f"unknown_{real_id}"
     
     # DB 키 형식: "Character.{ID}.1"
@@ -51,7 +45,6 @@ def get_program_char_key(real_id, name_db):
     return formatted_key
 
 def sanitize_filename(name):
-    """파일 시스템에서 사용할 수 없는 특수문자 제거"""
     # 윈도우/리눅스 공통 금지 문자 제거 (<, >, :, ", /, \, |, ?, *)
     return re.sub(r'[\\/*?:"<>|]', "", name).strip()
 
@@ -75,7 +68,6 @@ def save_build_to_json(url):
         print(f"URL 해독 에러: {decoded['error']}")
         return
 
-    # [수정] 빌드 이름으로 파일명 생성
     build_name = decoded['build_name']
     safe_filename = f"{sanitize_filename(build_name)}.json"
     
@@ -105,15 +97,10 @@ def save_build_to_json(url):
         potentials_dict = {}
         for mapped_pot_idx in data['mapped_potentials']:
             real_pot_id = get_real_id(mapped_pot_idx, pot_map)
-            
-            # [수정] 마크가 없으면 기본값 2 적용
             priority = data['marks'].get(mapped_pot_idx, 2) 
-            
-            # ID는 문자열 키로 저장 ("510301": 5)
             potentials_dict[str(real_pot_id)] = priority
             
         result_json["characters"][char_key] = potentials_dict
-
     # 5. 파일 저장
     try:
         with open(safe_filename, 'w', encoding='utf-8') as f:
@@ -126,6 +113,6 @@ def save_build_to_json(url):
 # === 실행 설정 ===
 if __name__ == "__main__":
     # 변환하고 싶은 URL을 여기에 넣으세요
-    TARGET_URL = "https://jforplay.github.io/sstoy/app.html#build=v2d-hcWyouZY~47~%7C%23k%2300ruyGeb)H3GU4%5EX9pnZ%5D(tY4LkS%23Q6IA%3Ch*%3D6L3.(upfE%5D%24yFx%2C%2F)U%3A~%7Di!NWy1v%246h8%40j%3C%3CUcjWS%26%2C(_Q35%3E%2FJctFl3Wq%24aLgS%7Bh%40bf8BW50g6(kL6%40O%23LV0F%23Btvlly%5DGGNK%2CQI!0!O(yxN%60c6%7D%40F_7RH6%5BBy0%3AFT.CA"
+    TARGET_URL = ""
     
     save_build_to_json(TARGET_URL)
