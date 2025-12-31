@@ -257,8 +257,16 @@ class ControlPanel(QWidget):
         self.overlay.close()
         self.close()
 
+def debug_log(msg):
+    print(f"[MAIN] {msg}")
+
 if __name__ == "__main__":
+    print("\n" + "="*50)
+    debug_log("프로그램 시작 (Entry Point)")
     app = QApplication(sys.argv)
+    debug_log("GUI 초기화 중...")
     panel = ControlPanel()
     panel.show()
+    debug_log("이벤트 루프 시작 (App Exec)")
+    print("="*50 + "\n")
     sys.exit(app.exec_())

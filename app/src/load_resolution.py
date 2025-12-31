@@ -8,6 +8,14 @@ class RECT(ctypes.Structure):
     _fields_ = [("left", ctypes.c_long), ("top", ctypes.c_long),
                 ("right", ctypes.c_long), ("bottom", ctypes.c_long)]
 
+last_error_msg = ""
+def log_once(msg):
+    """이전과 같은 메시지면 출력하지 않음"""
+    global last_error_msg
+    if msg != last_error_msg:
+        print(f"[DEBUG] {msg}")
+        last_error_msg = msg
+
 def get_game_geometry():
     """
     현재 게임 창의 정보를 가져옵니다.
@@ -15,7 +23,9 @@ def get_game_geometry():
     """
     try:
         windows = gw.getWindowsWithTitle(TARGET_GAME_TITLE)
-        if not windows: return None
+        if not windows:
+            log_once(f"창을 찾을 수 없음. 검색어: '{TARGET_GAME_TITLE}'")
+            return None
         
         hwnd = windows[0]._hWnd
         
@@ -33,12 +43,14 @@ def get_game_geometry():
         ctypes.windll.user32.ClientToScreen(hwnd, ctypes.byref(point))
         
         if width == 0 or height == 0: return None
+        log_once(f"게임 발견 성공! 위치: {point.x},{point.y} 크기: {width}x{height}")
 
         return {
             "x": point.x, "y": point.y, # 창의 좌상단 절대 좌표
             "w": width,   "h": height   # 창의 내부 크기
         }
-    except:
+    except Exception as e:
+        log_once(f"get_game_geometry 내부 오류: {e}")
         return None
 
 def get_capture_area(geo, roi_ratio, face_offset_ratio=None):
