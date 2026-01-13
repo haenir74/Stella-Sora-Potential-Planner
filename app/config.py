@@ -44,7 +44,12 @@ FACE_OFFSET = {"x": -0.05078, "y": -0.02083, "w": 0.05569, "h": 0.16278}
 # ------------------------------------------------------
 # __file__: 현재 파일(config.py)의 절대 경로
 # .parent: 이 파일이 있는 디렉토리 (app/)
-APP_DIR = Path(__file__).resolve().parent
+if getattr(sys, 'frozen', False):
+    # [빌드 환경] 실행 파일(.exe)이 있는 폴더를 기준(APP_DIR)으로 잡음
+    APP_DIR = Path(sys.executable).parent
+else:
+    # [개발 환경] config.py 파일이 있는 폴더를 기준(APP_DIR)으로 잡음
+    APP_DIR = Path(__file__).resolve().parent
 
 # 프로젝트 루트 (app/ 상위 폴더)
 PROJECT_ROOT = APP_DIR.parent
