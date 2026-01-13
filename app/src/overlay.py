@@ -173,6 +173,7 @@ class OverlayWindow(QWidget):
         # B. 스킬(카드) 인식 영역
         card_area = get_capture_area(geo, roi, None)
         painter.setPen(QPen(QColor(255, 255, 255, 80), 1, Qt.DotLine))
+        painter.setBrush(Qt.NoBrush)
         painter.drawRect(card_area["left"], card_area["top"], card_area["width"], card_area["height"])
 
         if index in self.debug_info:
