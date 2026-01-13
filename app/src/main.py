@@ -10,6 +10,10 @@ from PyQt5.QtGui import QFont
 from config import __version__, DEFAULT_BUILD_FILE, BUILDS_FOLDER, AppStatus
 from src.worker import MatcherWorker
 from src.overlay import OverlayWindow
+from logger import setup_logging, get_logger
+
+setup_logging()
+log = get_logger(__name__)
 
 try:
     from sstoy_loader.build_maker import BuildMakerApp
