@@ -145,6 +145,8 @@ def _load_skill_images(potentials_path: Path) -> SkillTemplateType:
             
         char_name = char_folder.name
         char_skills = {}
+
+        loaded_files = []
         
         for entry in char_folder.iterdir():
             if not entry.is_file() or not entry.suffix.lower() in ('.png', '.jpg', '.jpeg'):
@@ -158,12 +160,16 @@ def _load_skill_images(potentials_path: Path) -> SkillTemplateType:
                     continue
                     
                 char_skills[entry.name] = img
+                loaded_files.append(entry.name)
                 
             except Exception as e:
                 logger.error(f"스킬 로드 중 오류 ({char_name}/{entry.name}): {e}")
         
         if char_skills:
             templates[char_name] = char_skills
+            logger.info(f"  ✅ [{char_name}] 로드됨 ({len(char_skills)}개): {loaded_files}")
+        else:
+            logger.warning(f"  ⚠️ [{char_name}] 폴더는 있지만 로드된 스킬 이미지가 없습니다.")
             
     return templates
 

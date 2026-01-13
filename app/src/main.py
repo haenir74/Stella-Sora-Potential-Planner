@@ -25,6 +25,7 @@ except ImportError:
     BuildMakerApp = None
 
 # 로거 설정
+from src.logger import setup_logging
 logger = logging.getLogger("MainGUI")
 
 # 고해상도 모니터(DPI) 대응
@@ -291,6 +292,7 @@ class ControlPanel(QWidget):
         self.close()
 
 if __name__ == "__main__":
+    setup_logging()
     app = QApplication(sys.argv)
     panel = ControlPanel()
     panel.show()
