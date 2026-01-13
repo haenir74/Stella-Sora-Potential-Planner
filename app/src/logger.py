@@ -27,9 +27,10 @@ def setup_logging():
         format='[%(asctime)s] [%(levelname)s] %(filename)s:%(lineno)d - %(message)s',
         datefmt='%H:%M:%S',
         handlers=[
-            logging.FileHandler(log_filepath, encoding='utf-8'), # 한글 깨짐 방지
+            logging.FileHandler(log_filepath, mode='w', encoding='utf-8'),
             logging.StreamHandler(sys.stdout)
-        ]
+        ],
+        force=True
     )
 
     # 4. 프로그램이 갑자기 꺼질 때 에러를 로그에 남기는 훅(Hook) 설정
@@ -37,11 +38,10 @@ def setup_logging():
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
-        
-        logging.critical("Uncaught exception (Critical Crash)", exc_info=(exc_type, exc_value, exc_traceback))
+        logging.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
 
     sys.excepthook = handle_exception
-    logging.info("=== Application Started ===")
+    logging.info(f"=== Application Started (Log: {log_filepath}) ===")
 
 # 모듈별로 로거를 가져올 때 사용할 헬퍼 함수
 def get_logger(name):
