@@ -3,73 +3,90 @@ import os
 import json
 import re
 import requests
-from . import decoder
-
-try:
-    from config import CHARACTER_DB_URL, POTENTIAL_DB_URL, CHAR_NAME_DB_URL, BUILDS_FOLDER
-except ImportError:
-    # 혹시 모를 경로 에러 대비 (단독 실행 등)
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-    from config import CHARACTER_DB_URL, POTENTIAL_DB_URL, CHAR_NAME_DB_URL, BUILDS_FOLDER
+import logging
+from pathlib import Path
+from typing import Dict, List, Optional, Any
 
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, 
                              QLineEdit, QPushButton, QTextEdit, QMessageBox, QProgressBar)
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont
 
-# === 설정 ===
-REPO_BASE_URL = "https://raw.githubusercontent.com/JforPlay/sstoy/refs/heads/main/public/data"
-CHARACTER_DB_URL = f"{REPO_BASE_URL}/Character.json"
-POTENTIAL_DB_URL = f"{REPO_BASE_URL}/Potential.json"
-CHAR_NAME_DB_URL = f"{REPO_BASE_URL}/EN/Character.json"
+try:
+    from . import decoder
+except ImportError:
+    import decoder
 
-# 저장 경로 설정
-SAVE_DIR = BUILDS_FOLDER
+try:
+    from config import (
+        CHARACTER_DB_URL, POTENTIAL_DB_URL, CHAR_NAME_DB_URL, 
+        PRESETS_DIR
+    )
+except ImportError:
+    sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
+    from config import (
+        CHARACTER_DB_URL, POTENTIAL_DB_URL, CHAR_NAME_DB_URL, 
+        PRESETS_DIR
+    )
 
+# 로거 설정
+logger = logging.getLogger("BuildMaker")
 class ConverterWorker(QThread):
-    log_signal = pyqtSignal(str)       # 로그 메시지 전송
+    log_signal = pyqtSignal(str)       # 로그 메시지
     progress_signal = pyqtSignal(int)  # 진행률 (0~100)
     finished_signal = pyqtSignal(bool, str) # 성공 여부, 결과 메시지
 
-    def __init__(self, url):
+    def __init__(self, url: str):
         super().__init__()
         self.url = url
 
-    def fetch_db(self, url, name):
+    def fetch_db(self, url: str, name: str) -> Dict[str, Any]:
+        """SSToy의 최신 DB(JSON)를 다운로드합니다."""
         self.log_signal.emit(f"📥 {name} 데이터 다운로드 중...")
         try:
-            response = requests.get(url)
+            # 타임아웃 설정으로 무한 대기 방지
+            response = requests.get(url, timeout=10)
             response.raise_for_status()
             return response.json()
         except Exception as e:
             raise Exception(f"{name} 다운로드 실패: {e}")
 
-    def build_id_mapping(self, db_json):
+    def build_id_mapping(self, db_json: Dict[str, Any]) -> List[int]:
+        """DB 키(ID)를 정수 리스트로 변환하여 정렬합니다."""
         if not db_json: return []
+        # 키가 문자열 숫자일 수 있으므로 int 변환
         all_ids = [int(k) for k in db_json.keys()]
         return sorted(list(set(all_ids)))
 
-    def get_real_id(self, mapped_idx, id_map):
+    def get_real_id(self, mapped_idx: int, id_map: List[int]) -> Optional[int]:
+        """매핑된 인덱스를 실제 게임 ID로 변환합니다."""
         if 0 < mapped_idx <= len(id_map):
             return id_map[mapped_idx - 1]
         return None
 
-    def get_program_char_key(self, real_id, name_db):
+    def get_program_char_key(self, real_id: int, name_db: Dict[str, str]) -> str:
+        """프로그램에서 사용하는 캐릭터 키(파일명 기반)를 생성합니다."""
         if not name_db: return f"unknown_{real_id}"
+        
+        # DB 키 형식 예시: "Character.1042.1" -> "Character.{ID}.1"
         key = f"Character.{real_id}.1"
         english_name = name_db.get(key, f"Unknown_{real_id}")
+        
+        # 포맷 변환: 소문자화 -> 공백을 언더바로 -> 특수문자 제거
+        # 예: "Dark K" -> "dark_k"
         formatted_key = english_name.lower().replace(" ", "_")
         formatted_key = re.sub(r'[^a-z0-9_]', '', formatted_key)
         return formatted_key
 
-    def sanitize_filename(self, name):
+    def sanitize_filename(self, name: str) -> str:
+        """파일 저장용 안전한 이름으로 변환합니다."""
         return re.sub(r'[\\/*?:"<>|]', "", name).strip()
 
     def run(self):
         try:
             self.progress_signal.emit(10)
 
-            # 1. DB 다운로드
+            # 1. 최신 데이터 DB 다운로드 (순차적)
             char_db = self.fetch_db(CHARACTER_DB_URL, "Character")
             self.progress_signal.emit(30)
             
@@ -93,12 +110,12 @@ class ConverterWorker(QThread):
             build_name = decoded['build_name']
             safe_filename = f"{self.sanitize_filename(build_name)}.json"
             
-            # 4. 저장 폴더 확인
-            if not os.path.exists(SAVE_DIR):
-                os.makedirs(SAVE_DIR)
-                self.log_signal.emit(f"📂 폴더 생성됨: {SAVE_DIR}")
+            # 4. 저장 폴더 확인 (config.PRESETS_DIR 사용)
+            if not PRESETS_DIR.exists():
+                PRESETS_DIR.mkdir(parents=True, exist_ok=True)
+                self.log_signal.emit(f"📂 폴더 생성됨: {PRESETS_DIR}")
 
-            output_path = os.path.join(SAVE_DIR, safe_filename)
+            output_path = PRESETS_DIR / safe_filename
             self.log_signal.emit(f"📝 빌드 변환 시작: {build_name}")
 
             # 5. JSON 구조 생성
@@ -115,16 +132,22 @@ class ConverterWorker(QThread):
                 
                 data = raw_chars[pos]
                 
+                # ID 매핑
                 real_char_id = self.get_real_id(data['mapped_char_idx'], char_map)
+                if real_char_id is None:
+                    continue
+
                 char_key = self.get_program_char_key(real_char_id, name_db)
+                self.log_signal.emit(f"  - [{pos.upper()}] {char_key} (ID:{real_char_id})")
                 
-                self.log_signal.emit(f"  - [{pos.upper()}] ID:{real_char_id} -> Key: \"{char_key}\"")
-                
+                # 잠재력 매핑
                 potentials_dict = {}
                 for mapped_pot_idx in data['mapped_potentials']:
                     real_pot_id = self.get_real_id(mapped_pot_idx, pot_map)
+                    if real_pot_id is None:
+                        continue
                     
-                    # [중요] 마크가 없으면 기본값 2 (사용자 요청)
+                    # 마크(우선순위)가 없으면 기본값 2 (Lv.1 권장) 적용
                     priority = data['marks'].get(mapped_pot_idx, 2)
                     potentials_dict[str(real_pot_id)] = priority
                     
@@ -135,9 +158,10 @@ class ConverterWorker(QThread):
                 json.dump(result_json, f, indent=2, ensure_ascii=False)
             
             self.progress_signal.emit(100)
-            self.finished_signal.emit(True, f"저장 완료!\n경로: {output_path}")
+            self.finished_signal.emit(True, f"저장 완료!\n파일: {output_path.name}")
 
         except Exception as e:
+            logger.error(f"변환 작업 실패: {e}")
             self.finished_signal.emit(False, str(e))
 
 class BuildMakerApp(QWidget):
@@ -147,8 +171,8 @@ class BuildMakerApp(QWidget):
         super().__init__()
         self.setWindowTitle("SSToy Build Converter")
         self.resize(500, 450)
+        self.worker: Optional[ConverterWorker] = None
         self.initUI()
-        self.worker = None
 
     def initUI(self):
         layout = QVBoxLayout()
@@ -162,7 +186,7 @@ class BuildMakerApp(QWidget):
         layout.addWidget(title)
 
         # 설명
-        desc = QLabel("공유받은 URL을 입력하면 프로그램용 빌드 파일로 변환하여\n[app/resources/presets] 폴더에 저장합니다.")
+        desc = QLabel("공유받은 URL을 입력하면 프로그램용 빌드 파일로 변환하여\nPresets 폴더에 저장합니다.")
         desc.setStyleSheet("color: #666;")
         desc.setAlignment(Qt.AlignCenter)
         layout.addWidget(desc)
@@ -206,7 +230,7 @@ class BuildMakerApp(QWidget):
 
         self.setLayout(layout)
 
-    def log(self, message):
+    def log(self, message: str):
         self.log_view.append(message)
         # 스크롤 최하단 이동
         scrollbar = self.log_view.verticalScrollBar()
@@ -218,9 +242,9 @@ class BuildMakerApp(QWidget):
             QMessageBox.warning(self, "입력 오류", "URL을 입력해주세요.")
             return
 
-        if "build=" not in url:
-            QMessageBox.warning(self, "형식 오류", "올바른 SSToy 빌드 URL이 아닙니다.")
-            return
+        if "build=" not in url and not url.startswith("v2d-"):
+             QMessageBox.warning(self, "형식 오류", "올바른 SSToy 빌드 URL 형식이 아닙니다.")
+             return
 
         self.btn_convert.setEnabled(False)
         self.input_url.setEnabled(False)
@@ -235,28 +259,20 @@ class BuildMakerApp(QWidget):
         self.worker.finished_signal.connect(self.on_finished)
         self.worker.start()
 
-    def on_finished(self, success, message):
+    def on_finished(self, success: bool, message: str):
         self.btn_convert.setEnabled(True)
         self.input_url.setEnabled(True)
         
         if success:
             self.log(f"\n✅ {message}")
             QMessageBox.information(self, "성공", "빌드 파일이 성공적으로 생성되었습니다.")
-            self.conversion_finished.emit()
+            self.conversion_finished.emit() # 메인 윈도우에 알림
         else:
             self.log(f"\n❌ 오류 발생: {message}")
             QMessageBox.critical(self, "실패", f"변환 중 오류가 발생했습니다.\n{message}")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    
-    # 고해상도 모니터 대응
-    try:
-        import ctypes
-        ctypes.windll.user32.SetProcessDPIAware()
-    except:
-        pass
-
     window = BuildMakerApp()
     window.show()
     sys.exit(app.exec_())
