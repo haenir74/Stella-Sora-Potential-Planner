@@ -12,7 +12,7 @@ del /s /q *.pyc
 
 echo.
 echo [STEP 2] Building...
-python -m PyInstaller --clean --noconsole --onedir --name="PotentialPlanner" --distpath "%BUILD_DIR%\dist" --workpath "%BUILD_DIR%\build" --specpath "%BUILD_DIR%" --paths "src" "run.py"
+venv\Scripts\python -m PyInstaller --clean --noconsole --onedir --name="PotentialPlanner" --distpath "%BUILD_DIR%\dist" --workpath "%BUILD_DIR%\build" --specpath "%BUILD_DIR%" --paths "src" "run.py"
 
 echo.
 echo [STEP 3] Copying Resources...
