@@ -1,0 +1,44 @@
+[04:14:20] [INFO] logger.py:44 - === Application Started (Log: e:\Develop\Workspace\Stella-Sora-Potential-Planner\app\logs\log_2026-02-09.txt) ===
+[04:14:20] [INFO] config.py:107 - ✅ 경로 시스템 정상 (Base: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app)
+[04:14:21] [INFO] overlay.py:50 - 오버레이 윈도우 초기화 완료
+[04:14:21] [INFO] main.py:65 - GUI 초기화 완료
+[04:14:21] [INFO] worker.py:70 - Worker 스레드 시작
+[04:14:21] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '예시 빌드 (코하쿠, 세이나, 아야메)' (example_build.json)
+[04:14:21] [INFO] load_image.py:80 - 캐시된 데이터 로드 성공 (Fast Load)
+[04:14:21] [INFO] worker.py:88 - 리소스 로드 완료 (Face: 30, Skill: 30)
+[04:14:21] [DEBUG] worker.py:66 - 매칭 재개
+[04:14:21] [INFO] load_resolution.py:40 - 게임 발견 성공! 위치: 59,138 크기: 1280x720
+[04:14:56] [INFO] formatter.py:41 - === 작업 시작 (대상 폴더: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets) ===
+[04:14:56] [INFO] formatter.py:41 - Downloading Character Name DB...
+[04:14:56] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[04:14:56] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/EN/Character.json HTTP/1.1" 200 339
+[04:14:56] [INFO] formatter.py:41 - 매핑 테이블 생성 완료: 40개 로드됨.
+[04:14:56] [INFO] decoder.py:66 - === Decoding Start: https://jforplay.github.io/sst... ===
+[04:14:56] [INFO] decoder.py:80 - Header Parsed - Version: 3, Type: d (Deflated: True)
+[04:14:56] [INFO] decoder.py:109 - Raw Data Length: 176 bytes
+[04:14:56] [INFO] decoder.py:110 - Raw Data (Hex): 0310EC8388EBA19CEC9AB420EBB98CEB939C07950109D7B61FD8B61FDEB61FE1B61FDCB61FE0B61FDDB61FD9B61FDFB61F05DCB61F05010501050205010407D9B61F020301010301010102010101039C0108A5BC1FA6BC1FAABC1FAFBC1FB1BC1FB9BC1FBBBC1FABBC1F03AABC1F050505020506AABC1F01010204030203080202027407919D1F8E9D1F8A9D1F8D9D1F879D1F889D1F8F9D1F038A9D1F0503050405058A9D1F01030101040102020300
+[04:14:56] [INFO] decoder.py:127 - Parsed Info - StreamVer: 3, Name: '새로운 빌드'
+[04:14:56] [INFO] decoder.py:132 - Slot Mask: 0b111
+[04:14:56] [INFO] decoder.py:139 - --- Parsing Position: master ---
+[04:14:56] [INFO] decoder.py:143 - [master] Char Map Index: 149
+[04:14:56] [INFO] decoder.py:151 - [master] Potentials (9): [514903, 514904, 514910, 514913, 514908, 514912, 514909, 514905, 514911]
+[04:14:56] [INFO] decoder.py:163 - [master] Levels: {514908: 6, 514909: 6, 514910: 6, 514912: 6, 514913: 5}
+[04:14:56] [INFO] decoder.py:177 - [master] Marks: {514905: 1, 514908: 5, 514909: 4, 514910: 5, 514911: 1, 514912: 5, 514913: 4}
+[04:14:56] [INFO] decoder.py:139 - --- Parsing Position: assist1 ---
+[04:14:56] [INFO] decoder.py:143 - [assist1] Char Map Index: 156
+[04:14:56] [INFO] decoder.py:151 - [assist1] Potentials (8): [515621, 515622, 515626, 515631, 515633, 515641, 515643, 515627]
+[04:14:56] [INFO] decoder.py:163 - [assist1] Levels: {515626: 6, 515631: 6, 515633: 6}
+[04:14:56] [INFO] decoder.py:177 - [assist1] Marks: {515626: 5, 515627: 1, 515631: 4, 515633: 4, 515641: 1, 515643: 1}
+[04:14:56] [INFO] decoder.py:139 - --- Parsing Position: assist2 ---
+[04:14:56] [INFO] decoder.py:143 - [assist2] Char Map Index: 116
+[04:14:56] [INFO] decoder.py:151 - [assist2] Potentials (7): [511633, 511630, 511626, 511629, 511623, 511624, 511631]
+[04:14:56] [INFO] decoder.py:163 - [assist2] Levels: {511626: 6, 511629: 6, 511633: 6}
+[04:14:56] [INFO] decoder.py:177 - [assist2] Marks: {511626: 5, 511629: 5, 511630: 3, 511631: 1, 511633: 4}
+[04:14:56] [INFO] decoder.py:191 - Final Parsed Result: {'build_name': '새로운 빌드', 'raw_characters': {'master': {'mapped_char_idx': 149, 'mapped_potentials': [514903, 514904, 514910, 514913, 514908, 514912, 514909, 514905, 514911], 'potential_levels': {514908: 6, 514909: 6, 514910: 6, 514912: 6, 514913: 5}, 'marks': {514905: 1, 514908: 5, 514909: 4, 514910: 5, 514911: 1, 514912: 5, 514913: 4}}, 'assist1': {'mapped_char_idx': 156, 'mapped_potentials': [515621, 515622, 515626, 515631, 515633, 515641, 515643, 515627], 'potential_levels': {515626: 6, 515631: 6, 515633: 6}, 'marks': {515626: 5, 515627: 1, 515631: 4, 515633: 4, 515641: 1, 515643: 1}}, 'assist2': {'mapped_char_idx': 116, 'mapped_potentials': [511633, 511630, 511626, 511629, 511623, 511624, 511631], 'potential_levels': {511626: 6, 511629: 6, 511633: 6}, 'marks': {511626: 5, 511629: 5, 511630: 3, 511631: 1, 511633: 4}}}, 'version': 3}
+[04:14:56] [INFO] formatter.py:41 - 빌드 이름 감지: '새로운 빌드' -> 파일명: '새로운 빌드.json'
+[04:14:56] [INFO] formatter.py:41 - [master] 매핑: 149 -> gerie
+[04:14:56] [INFO] formatter.py:41 - [assist1] 매핑: 156 -> nazuna
+[04:14:56] [INFO] formatter.py:41 - [assist2] 매핑: 116 -> ridge
+[04:15:04] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '새로운 빌드' (새로운 빌드.json)
+[04:15:04] [INFO] worker.py:51 - 빌드 파일 변경됨: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets\새로운 빌드.json
+[04:15:47] [INFO] main.py:291 - 종료 요청 수신

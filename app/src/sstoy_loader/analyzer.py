@@ -114,6 +114,16 @@ def analyze_build_formatted(url: str):
 if __name__ == "__main__":
     # 테스트용 URL (필요 시 수정하여 사용)
     TARGET_URL = "https://jforplay.github.io/sstoy/app.html#build=v2d-Hig_gu6Y*)U%3E8%60%40Kdg%7DSnju3%3Bzjeg%3D!eC!ls!nabwLRoo~%5Bywg%7C.RM_D%5Bz%2F.V%7BWSxR%2BN.B%60nYwE%7Bqfv%5D9%23%7D%3Cb%7D%7D%7CY%3E~ZZ%3Ahj3%25~%25qEV%7BRkA%25S%7D6cg%24fLGBr~5CZzQ6R%5DzwRIec_q1_%24!_fXboNqIIBI%22qPGOBVCjkuv%402fqqHg%5Ew%5DMV%60aC%3AyCrs%3DVK)u%5D%3FTq(%5EW%3E%5DkqPQIE%3BHX%3D4aA2%3D4%2BnHE2%407!jC66%40K~IC"
+    print(f"Analyzing: {TARGET_URL[:50]}...")
+    logger.info(f"=== Analysis Start: {TARGET_URL} ===")
+
+    decoded = decoder.decode_url_raw(TARGET_URL)
+    if "error" in decoded:
+        logger.error(f"Decoding Error: {decoded['error']}") # [추가]
+        print(f"Error: {decoded['error']}")
+        sys.exit(1)
+    logger.info(f"Analyzer Result:\n{json.dumps(decoded, indent=4, ensure_ascii=False)}")
+    
     if "build=" in TARGET_URL:
         analyze_build_formatted(TARGET_URL)
     else:

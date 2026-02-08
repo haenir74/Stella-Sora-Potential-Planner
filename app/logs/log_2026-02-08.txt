@@ -1,0 +1,38 @@
+[23:09:27] [INFO] logger.py:44 - === Application Started (Log: e:\Develop\Workspace\Stella-Sora-Potential-Planner\app\logs\log_2026-02-08.txt) ===
+[23:09:27] [INFO] config.py:107 - ✅ 경로 시스템 정상 (Base: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app)
+[23:09:27] [INFO] overlay.py:50 - 오버레이 윈도우 초기화 완료
+[23:09:27] [INFO] main.py:61 - GUI 초기화 완료
+[23:09:27] [INFO] worker.py:70 - Worker 스레드 시작
+[23:09:27] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '예시 빌드 (코하쿠, 세이나, 아야메)' (example_build.json)
+[23:09:27] [INFO] load_image.py:80 - 캐시된 데이터 로드 성공 (Fast Load)
+[23:09:27] [INFO] worker.py:88 - 리소스 로드 완료 (Face: 30, Skill: 30)
+[23:09:27] [DEBUG] worker.py:66 - 매칭 재개
+[23:09:27] [INFO] load_resolution.py:40 - 게임 발견 성공! 위치: 59,138 크기: 1280x720
+[23:09:43] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[23:09:43] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/Character.json HTTP/1.1" 200 5505
+[23:09:43] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[23:09:43] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/Potential.json HTTP/1.1" 200 39694
+[23:09:43] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[23:09:43] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/EN/Character.json HTTP/1.1" 200 339
+[23:09:43] [INFO] decoder.py:66 - === Decoding Start: https://jforplay.github.io/sst... ===
+[23:09:43] [INFO] decoder.py:80 - Header Parsed - Version: 3, Type: d (Deflated: True)
+[23:09:43] [INFO] decoder.py:109 - Raw Data Length: 209 bytes
+[23:09:43] [INFO] decoder.py:110 - Raw Data (Hex): 0318EAB491EC97ADEC8B9CEC9584EBAFB8EB84A4EBA5B4EBB094079B0109AFBB1FB0BB1FB5BB1FB4BB1FB6BB1FB9BB1FB8BB1FB7BB1FB2BB1F03B4BB1F05010501050BB1BB1F01010401010101010101010104010401031D040104840107C6A91FC8A91FCEA91FD1A91FCCA91FCDA91FCFA91F02CEA91F0503050CEE9D1F0402040103010301040204D50B04020401040101010402036B0885961F88961F86961F89961F83961F81961F97961F87961F0685961F0501050105010501050E050785961F01010101030103010302030C0300
+[23:09:43] [INFO] decoder.py:127 - Parsed Info - StreamVer: 3, Name: '광역시아미네르바'
+[23:09:43] [INFO] decoder.py:132 - Slot Mask: 0b111
+[23:09:43] [INFO] decoder.py:139 - --- Parsing Position: master ---
+[23:09:43] [INFO] decoder.py:143 - [master] Char Map Index: 155
+[23:09:43] [INFO] decoder.py:151 - [master] Potentials (9): [515503, 515504, 515509, 515508, 515510, 515513, 515512, 515511, 515506]
+[23:09:43] [INFO] decoder.py:163 - [master] Levels: {515508: 6, 515509: 6, 515510: 6}
+[23:09:43] [INFO] decoder.py:177 - [master] Marks: {515505: 5, 515506: 3, 515507: 5, 515508: 5, 515509: 5, 515510: 5, 515511: 3, 515512: 3, 515513: 4, 515542: 3, 515543: 3}
+[23:09:43] [INFO] decoder.py:139 - --- Parsing Position: assist1 ---
+[23:09:43] [INFO] decoder.py:143 - [assist1] Char Map Index: 132
+[23:09:43] [INFO] decoder.py:151 - [assist1] Potentials (7): [513222, 513224, 513230, 513233, 513228, 513229, 513231]
+[23:09:43] [INFO] decoder.py:163 - [assist1] Levels: {513230: 6, 513233: 6}
+[23:09:43] [INFO] decoder.py:177 - [assist1] Marks: {511726: 3, 511728: 3, 511729: 4, 511730: 4, 511731: 3, 511733: 3, 513226: 3, 513228: 3, 513229: 3, 513230: 5, 513231: 3, 513233: 4}
+[23:09:43] [INFO] decoder.py:139 - --- Parsing Position: assist2 ---
+[23:09:43] [INFO] decoder.py:143 - [assist2] Char Map Index: 107
+[23:09:43] [INFO] decoder.py:151 - [assist2] Potentials (8): [510725, 510728, 510726, 510729, 510723, 510721, 510743, 510727]
+[23:09:43] [INFO] decoder.py:163 - [assist2] Levels: {510725: 6, 510726: 6, 510727: 6, 510728: 6, 510729: 6, 510743: 6}
+[23:09:43] [INFO] decoder.py:177 - [assist2] Marks: {510725: 5, 510726: 5, 510727: 4, 510728: 4, 510729: 4, 510731: 4, 510743: 4}
+[23:09:43] [INFO] decoder.py:191 - Final Parsed Result: {'build_name': '광역시아미네르바', 'raw_characters': {'master': {'mapped_char_idx': 155, 'mapped_potentials': [515503, 515504, 515509, 515508, 515510, 515513, 515512, 515511, 515506], 'potential_levels': {515508: 6, 515509: 6, 515510: 6}, 'marks': {515505: 5, 515506: 3, 515507: 5, 515508: 5, 515509: 5, 515510: 5, 515511: 3, 515512: 3, 515513: 4, 515542: 3, 515543: 3}}, 'assist1': {'mapped_char_idx': 132, 'mapped_potentials': [513222, 513224, 513230, 513233, 513228, 513229, 513231], 'potential_levels': {513230: 6, 513233: 6}, 'marks': {511726: 3, 511728: 3, 511729: 4, 511730: 4, 511731: 3, 511733: 3, 513226: 3, 513228: 3, 513229: 3, 513230: 5, 513231: 3, 513233: 4}}, 'assist2': {'mapped_char_idx': 107, 'mapped_potentials': [510725, 510728, 510726, 510729, 510723, 510721, 510743, 510727], 'potential_levels': {510725: 6, 510726: 6, 510727: 6, 510728: 6, 510729: 6, 510743: 6}, 'marks': {510725: 5, 510726: 5, 510727: 4, 510728: 4, 510729: 4, 510731: 4, 510743: 4}}}, 'version': 3}
