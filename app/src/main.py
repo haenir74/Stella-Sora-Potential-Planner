@@ -19,10 +19,14 @@ except ImportError as e:
     sys.exit(1)
 
 # 선택적 모듈 (빌드 생성기)
+BuildMaker = None
 try:
-    from src.sstoy_loader.build_maker import BuildMakerApp
+    from sstoy_loader.build_maker import BuildMaker
 except ImportError:
-    BuildMakerApp = None
+    try:
+        from src.sstoy_loader.build_maker import BuildMaker
+    except ImportError as e:
+        logging.error(f"빌드 생성기 로드 실패: {e}")
 
 # 로거 설정
 from src.logger import setup_logging
@@ -262,7 +266,7 @@ class ControlPanel(QWidget):
 
     def open_build_maker(self):
         """빌드 생성기 창 열기"""
-        if BuildMakerApp is None:
+        if BuildMaker is None:
             QMessageBox.critical(self, "오류", "빌드 생성기 모듈을 찾을 수 없습니다.\n(src/sstoy_loader 폴더 확인 필요)")
             return
 
@@ -271,7 +275,7 @@ class ControlPanel(QWidget):
             self.build_maker_window.activateWindow()
             return
 
-        self.build_maker_window = BuildMakerApp()
+        self.build_maker_window = BuildMaker()
         # 생성 완료 시 리스트 새로고침 연결
         self.build_maker_window.conversion_finished.connect(self.refresh_build_list)
         self.build_maker_window.show()
