@@ -1,0 +1,45 @@
+[00:13:12] [INFO] logger.py:44 - === Application Started (Log: e:\Develop\Workspace\Stella-Sora-Potential-Planner\app\logs\log_2026-02-10.txt) ===
+[00:13:12] [INFO] config.py:107 - ✅ 경로 시스템 정상 (Base: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app)
+[00:13:12] [INFO] overlay.py:50 - 오버레이 윈도우 초기화 완료
+[00:13:12] [INFO] main.py:65 - GUI 초기화 완료
+[00:13:12] [INFO] worker.py:70 - Worker 스레드 시작
+[00:13:13] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '예시 빌드 (코하쿠, 세이나, 아야메)' (example_build.json)
+[00:13:13] [INFO] load_image.py:80 - 캐시된 데이터 로드 성공 (Fast Load)
+[00:13:13] [INFO] worker.py:88 - 리소스 로드 완료 (Face: 30, Skill: 30)
+[00:13:13] [DEBUG] worker.py:66 - 매칭 재개
+[00:13:13] [DEBUG] load_resolution.py:40 - 게임 창이 최소화되어 있습니다.
+[00:13:21] [INFO] formatter.py:41 - === 작업 시작 (대상 폴더: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets) ===
+[00:13:21] [INFO] formatter.py:41 - Downloading Character Name DB...
+[00:13:21] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[00:13:21] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/EN/Character.json HTTP/1.1" 200 339
+[00:13:21] [INFO] formatter.py:41 - 매핑 테이블 생성 완료: 40개 로드됨.
+[00:13:21] [INFO] decoder.py:73 - === Decoding Start: https://jforplay.github.io/sst... ===
+[00:13:21] [INFO] decoder.py:87 - Header Parsed - Version: 3, Type: d (Deflated: True)
+[00:13:21] [INFO] decoder.py:116 - Raw Data Length: 175 bytes
+[00:13:21] [INFO] decoder.py:117 - Raw Data (Hex): 0317EB8298ECA688EB829820ED919CEC8B9D20EB9585EB8DB1079C010791BC1F92BC1F9CBC1F9DBC1F9ABC1F96BC1FBBBC1F0596BC1F050405020501051E050596BC1F010401020101011E01950106E9B61FEBB61FF3B61FF4B61FF5B61FF2B61F03F3B61F050105010504F2B61F040101010101019F0105D1BE1FD4BE1FD6BE1FD9BE1FDDBE1F03D6BE1F050305040503D6BE1F0103010401011F94880D0095880D00FE870D009A880D00F5870D00
+[00:13:21] [INFO] decoder.py:134 - Parsed Info - StreamVer: 3, Name: '나즈나 표식 땅덱'
+[00:13:21] [INFO] decoder.py:139 - Slot Mask: 0b111
+[00:13:21] [INFO] decoder.py:146 - --- Parsing Position: master ---
+[00:13:21] [INFO] decoder.py:150 - [master] Char Map Index: 156
+[00:13:21] [INFO] decoder.py:158 - [master] Potentials (7): [515601, 515602, 515612, 515613, 515610, 515606, 515643]
+[00:13:21] [INFO] decoder.py:170 - [master] Levels: {515606: 6, 515610: 6, 515612: 6, 515613: 6, 515643: 6}
+[00:13:21] [INFO] decoder.py:184 - [master] Marks: {515606: 5, 515610: 5, 515612: 5, 515613: 5, 515643: 5}
+[00:13:21] [INFO] decoder.py:146 - --- Parsing Position: assist1 ---
+[00:13:21] [INFO] decoder.py:150 - [assist1] Char Map Index: 149
+[00:13:21] [INFO] decoder.py:158 - [assist1] Potentials (6): [514921, 514923, 514931, 514932, 514933, 514930]
+[00:13:21] [INFO] decoder.py:170 - [assist1] Levels: {514931: 6, 514932: 6, 514933: 6}
+[00:13:21] [INFO] decoder.py:184 - [assist1] Marks: {514930: 3, 514931: 5, 514932: 5, 514933: 5}
+[00:13:21] [INFO] decoder.py:146 - --- Parsing Position: assist2 ---
+[00:13:21] [INFO] decoder.py:150 - [assist2] Char Map Index: 159
+[00:13:21] [INFO] decoder.py:158 - [assist2] Potentials (5): [515921, 515924, 515926, 515929, 515933]
+[00:13:21] [INFO] decoder.py:170 - [assist2] Levels: {515926: 6, 515929: 6, 515933: 6}
+[00:13:21] [INFO] decoder.py:184 - [assist2] Marks: {515926: 5, 515929: 5, 515933: 5}
+[00:13:21] [INFO] decoder.py:198 - Final Parsed Result: {'build_name': '나즈나 표식 땅덱', 'raw_characters': {'master': {'mapped_char_idx': 156, 'mapped_potentials': [515601, 515602, 515612, 515613, 515610, 515606, 515643], 'potential_levels': {515606: 6, 515610: 6, 515612: 6, 515613: 6, 515643: 6}, 'marks': {515606: 5, 515610: 5, 515612: 5, 515613: 5, 515643: 5}}, 'assist1': {'mapped_char_idx': 149, 'mapped_potentials': [514921, 514923, 514931, 514932, 514933, 514930], 'potential_levels': {514931: 6, 514932: 6, 514933: 6}, 'marks': {514930: 3, 514931: 5, 514932: 5, 514933: 5}}, 'assist2': {'mapped_char_idx': 159, 'mapped_potentials': [515921, 515924, 515926, 515929, 515933], 'potential_levels': {515926: 6, 515929: 6, 515933: 6}, 'marks': {515926: 5, 515929: 5, 515933: 5}}}, 'version': 3}
+[00:13:21] [INFO] formatter.py:41 - 빌드 이름 감지: '나즈나 표식 땅덱' -> 파일명: '나즈나 표식 땅덱.json'
+[00:13:21] [INFO] formatter.py:41 - [master] 매핑: 156 -> nazuna
+[00:13:21] [INFO] formatter.py:41 - [assist1] 매핑: 149 -> gerie
+[00:13:21] [INFO] formatter.py:41 - [assist2] 매핑: 159 -> springseek_coronis
+[00:14:12] [INFO] load_resolution.py:40 - 게임 발견 성공! 위치: 59,138 크기: 1280x720
+[00:14:14] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '나즈나 표식 땅덱' (나즈나 표식 땅덱.json)
+[00:14:14] [INFO] worker.py:51 - 빌드 파일 변경됨: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets\나즈나 표식 땅덱.json
+[00:16:41] [INFO] main.py:291 - 종료 요청 수신

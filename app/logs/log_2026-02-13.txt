@@ -1,0 +1,22 @@
+[21:34:51] [INFO] logger.py:44 - === Application Started (Log: e:\Develop\Workspace\Stella-Sora-Potential-Planner\app\logs\log_2026-02-13.txt) ===
+[21:34:52] [INFO] config.py:107 - ✅ 경로 시스템 정상 (Base: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app)
+[21:34:53] [INFO] overlay.py:50 - 오버레이 윈도우 초기화 완료
+[21:34:53] [INFO] main.py:65 - GUI 초기화 완료
+[21:34:54] [INFO] worker.py:70 - Worker 스레드 시작
+[21:34:54] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '예시 빌드 (코하쿠, 세이나, 아야메)' (example_build.json)
+[21:34:54] [INFO] load_image.py:80 - 캐시된 데이터 로드 성공 (Fast Load)
+[21:34:54] [INFO] worker.py:88 - 리소스 로드 완료 (Face: 30, Skill: 30)
+[21:34:54] [DEBUG] worker.py:66 - 매칭 재개
+[21:34:54] [INFO] load_resolution.py:40 - 게임 발견 성공! 위치: 59,138 크기: 1280x720
+[21:35:03] [INFO] formatter.py:29 - === 작업 시작 (대상 폴더: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets) ===
+[21:35:03] [INFO] formatter.py:29 - Downloading Character Name DB...
+[21:35:03] [DEBUG] connectionpool.py:1049 - Starting new HTTPS connection (1): raw.githubusercontent.com:443
+[21:35:03] [DEBUG] connectionpool.py:544 - https://raw.githubusercontent.com:443 "GET /JforPlay/sstoy/refs/heads/main/public/data/EN/Character.json HTTP/1.1" 200 339
+[21:35:03] [INFO] formatter.py:29 - ID->Name 매핑 테이블 생성 완료: 40개 로드됨.
+[21:35:03] [INFO] decoder.py:178 - Detected Version: 3
+[21:35:03] [INFO] formatter.py:29 - 빌드 이름: '평캔 시아빌드' -> 파일명: '평캔 시아빌드.json'
+[21:35:03] [INFO] formatter.py:29 - [master] 처리: ID 155 -> shia
+[21:35:03] [INFO] formatter.py:29 - [assist1] 처리: ID 132 -> minova
+[21:35:03] [INFO] formatter.py:29 - [assist2] 처리: ID 107 -> tilia
+[21:35:07] [INFO] load_build.py:44 - 빌드 설정 로드 완료: '평캔 시아빌드' (평캔 시아빌드.json)
+[21:35:07] [INFO] worker.py:51 - 빌드 파일 변경됨: E:\Develop\Workspace\Stella-Sora-Potential-Planner\app\resources\presets\평캔 시아빌드.json
